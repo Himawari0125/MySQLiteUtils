@@ -81,16 +81,17 @@ public class DBManager {
 
     }
 
-    public static void updateDatas(Context mContext){
+    public static void updateDatas(Context mContext,String updateKey,String updateValues,String selects,String[] selectArgs){
         OrderDBHelper helper = OrderDBHelper.getInstance(mContext,Contant.TABLE_NAME,Contant.DB_VERSION);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
 
 // update Orders set OrderPrice = 800 where Id = 6
         ContentValues cv = new ContentValues();
-        cv.put("name", "Jackson");
-        db.update(Contant.TABLE_NAME, cv, "Id = ?", new String[]{String.valueOf(12)});
+        cv.put(updateKey, updateValues);
+        db.update(Contant.TABLE_NAME, cv, selects+" = ?", selectArgs);
         db.setTransactionSuccessful();
+        db.endTransaction();
 
 
     }

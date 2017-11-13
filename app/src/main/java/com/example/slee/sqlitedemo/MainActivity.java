@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onUpdateClick(View view){
-        DBManager.updateDatas(this);
+        DBManager.updateDatas(this,"name",name_edt.getText().toString(),"id",new String[]{id_edt.getText().toString()});
 
     }
     private void init(){
