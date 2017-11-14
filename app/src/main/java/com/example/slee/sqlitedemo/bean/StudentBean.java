@@ -1,14 +1,11 @@
 package com.example.slee.sqlitedemo.bean;
 
-import android.content.ContentValues;
-
-import java.util.Objects;
 
 /**
  * Created by S.Lee on 2017/11/9.
  */
 
-public class StudentBean{
+public class StudentBean extends BaseBean{
     private int id;
     private String name;
     private int age;
@@ -42,7 +39,7 @@ public class StudentBean{
     }
 
     public String[] getTypes(String[] strs){
-        if(strs == null)
+        if(strs.length == 0)
             return new String[]{"INTEGER","TEXT","INTEGER"};
         String[] returns = new String[3];
         for(int i = 0 ; i < strs.length;i++){
