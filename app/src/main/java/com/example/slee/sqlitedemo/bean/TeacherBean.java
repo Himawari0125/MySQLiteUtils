@@ -1,16 +1,16 @@
 package com.example.slee.sqlitedemo.bean;
 
-
 import android.content.ContentValues;
 
 /**
- * Created by S.Lee on 2017/11/9.
+ * Created by S.Lee on 2017/11/15.
  */
 
-public class StudentBean extends BaseBean{
+public class TeacherBean extends BaseBean {
     private int id;
     private String name;
     private int age;
+    private String classes;
 
     public int getId() {
         return id;
@@ -36,18 +36,19 @@ public class StudentBean extends BaseBean{
         this.age = age;
     }
 
-    @Override
-    public String toString(){
-        return  String.format(" (id,name,age) values (%d,\'%s\',%d)",id,name,age);
+    public String getClasses() {
+        return classes;
     }
 
-
+    public void setClasses(String classes) {
+        this.classes = classes;
+    }
 
     @Override
-    public String[] getTypes(String[] strs){
+    public String[] getTypes(String[] strs) {
         if(strs.length == 0)
-            return new String[]{"INTEGER","TEXT","INTEGER"};
-        String[] returns = new String[3];
+            return new String[]{"INTEGER","TEXT","INTEGER","TEXT"};
+        String[] returns = new String[4];
         for(int i = 0 ; i < strs.length;i++){
             switch (strs[i]){
                 case "id":
@@ -59,9 +60,12 @@ public class StudentBean extends BaseBean{
                 case "age":
                     returns[2] = "INTEGER";
                     break;
+                case "classes":
+                    returns[3] = "TEXT";
+                    break;
             }
         }
-        if(strs.length < 3){
+        if(strs.length < 4){
             String[] strings = new String[strs.length];
             int i = 0;
             for(String str:returns){
@@ -75,7 +79,7 @@ public class StudentBean extends BaseBean{
     }
 
     @Override
-    public void allSets(String str,Object content){
+    public void allSets(String str, Object content) {
         switch (str){
             case "id":
                 setId((Integer) content);
@@ -86,18 +90,25 @@ public class StudentBean extends BaseBean{
             case "age":
                 setAge((Integer) content);
                 break;
+            case "classes":
+                setClasses((String)content);
+                break;
         }
     }
 
-
+    @Override
+    public String toString() {
+        return String.format(" (id,name,age,classes) values (%d,\'%s\',%d,\'%s\')",id,name,age,classes);
+    }
 
     @Override
     public ContentValues getContentValues(BaseBean bean) {
-        StudentBean mbean = (StudentBean)bean;
+        TeacherBean mbean = (TeacherBean)bean;
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id", mbean.getId());
-        contentValues.put("name", mbean.getName());
-        contentValues.put("age", mbean.getAge());
+        contentValues.put("id",mbean.getId());
+        contentValues.put("name",mbean.getName());
+        contentValues.put("age",mbean.getAge());
+        contentValues.put("classes",mbean.getClasses());
         return contentValues;
     }
 }

@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.slee.sqlitedemo.bean.StudentBean;
+import com.example.slee.sqlitedemo.bean.BaseBean;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,8 +21,8 @@ public class DBManager {
     public interface DataBaseWriteListener{
         void writeComplited(boolean success);
     }
-    public static void addData(Context mContext, List<?> datas, DataBaseWriteListener listener){
-        OrderDBHelper helper = OrderDBHelper.getInstance(mContext, Contant.TABLE_NAME,Contant.DB_VERSION);
+    public static void addData(Context mContext,String tableClause, List<?> datas, DataBaseWriteListener listener){
+        OrderDBHelper helper = OrderDBHelper.getInstance(mContext, Contant.TABLE_NAME,Contant.DB_VERSION,tableClause);
         SQLiteDatabase db = helper.getWritableDatabase();
 
         db.beginTransaction();
@@ -38,8 +38,8 @@ public class DBManager {
         listener.writeComplited(true);
 
     }
-    public static List<Object> queryData(Context mContext,String[] colums,String selection,String className){
-        OrderDBHelper helper = OrderDBHelper.getInstance(mContext, Contant.TABLE_NAME,Contant.DB_VERSION);
+    public static List<Object> queryData(Context mContext,String tableClause,String[] colums,String selection,String className){
+        OrderDBHelper helper = OrderDBHelper.getInstance(mContext, Contant.TABLE_NAME,Contant.DB_VERSION,tableClause);
         SQLiteDatabase dbRead = helper.getReadableDatabase();
       //  Cursor mCursor = dbRead.query(Contant.TABLE_NAME,null,"name=\"Jackson\"",null,null,null,null,null);
         Cursor mCursor = dbRead.query(Contant.TABLE_NAME,colums,selection,null,null,null,null,null);
@@ -49,8 +49,8 @@ public class DBManager {
         return studentBeen;
     }
 
-    public static void deleteData(Context mcontext,String whereClause,String[] args){
-        OrderDBHelper helper = OrderDBHelper.getInstance(mcontext,Contant.TABLE_NAME, Contant.DB_VERSION);
+    public static void deleteData(Context mcontext,String tableClause,String whereClause,String[] args){
+        OrderDBHelper helper = OrderDBHelper.getInstance(mcontext,Contant.TABLE_NAME, Contant.DB_VERSION,tableClause);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         db.delete(Contant.TABLE_NAME,whereClause+" = ?",args);
@@ -59,27 +59,30 @@ public class DBManager {
 
     }
 
-    public  static void insertData(Context mContext,String nullColumnHack,StudentBean bean){
-        OrderDBHelper helpder = OrderDBHelper.getInstance(mContext,Contant.TABLE_NAME,Contant.DB_VERSION);
+    public  static void insertData(Context mContext,String tableClause,String nullColumnHack,BaseBean bean)throws Exception {
+        OrderDBHelper helpder = OrderDBHelper.getInstance(mContext,Contant.TABLE_NAME,Contant.DB_VERSION,tableClause);
         SQLiteDatabase db = helpder.getWritableDatabase();
         db.beginTransaction();
 
-//        insert into Orders(Id, CustomName, OrderPrice, Country) values (7, "Jne", 700, "China");
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("id", bean.getId());
-        contentValues.put("name", bean.getName());
-        contentValues.put("age", bean.getAge());
-        db.insertOrThrow(Contant.TABLE_NAME, nullColumnHack, contentValues);
-   //     db.insert(Contant.TABLE_NAME,nullColumnHack,contentValues);
-
+        String packageName = bean.getClass().toString();
+        String loaddClass = packageName.substring(6,packageName.length());
+        Class<?> mclass = Class.forName(loaddClass);
+        Object mobject = mclass.newInstance();
+        Method method = mclass.getMethod("getContentValues",Class.forName("com.example.slee.sqlitedemo.bean.BaseBean"));
+        ContentValues contentValues = (ContentValues) method.invoke(mobject,(Object)bean);
+        try {
+            db.insertOrThrow(Contant.TABLE_NAME, nullColumnHack, contentValues);
+            //     db.insert(Contant.TABLE_NAME,nullColumnHack,contentValues);
+        }catch (Exception e){
+            db.endTransaction();
+            throw new Exception(e.getMessage());
+        }
         db.setTransactionSuccessful();
         db.endTransaction();
-
-
     }
 
-    public static void updateDatas(Context mContext,String updateKey,String updateValues,String selects,String[] selectArgs){
-        OrderDBHelper helper = OrderDBHelper.getInstance(mContext,Contant.TABLE_NAME,Contant.DB_VERSION);
+    public static void updateDatas(Context mContext,String tableClause,String updateKey,String updateValues,String selects,String[] selectArgs){
+        OrderDBHelper helper = OrderDBHelper.getInstance(mContext,Contant.TABLE_NAME,Contant.DB_VERSION,tableClause);
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
 
@@ -89,8 +92,6 @@ public class DBManager {
         db.update(Contant.TABLE_NAME, cv, selects+" = ?", selectArgs);
         db.setTransactionSuccessful();
         db.endTransaction();
-
-
     }
 
 
