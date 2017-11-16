@@ -5,7 +5,8 @@ package com.example.slee.sqlitedemo.com.example.slee.helper;
  */
 
 public class Contant {
-    public static final String DB_NAME = "Test.db";
+    public static final String DB_NAME_STUDENT = "Test.db";
+    public static final String DB_NAME_TEACHER = "Teacher.db";
     public static final int DB_VERSION = 1;
     public static final String TABLE_NAME = "Orders";
     public static final String STUDENT_TABLE_CLAUSE = "(id integer primary key,name text,age integer)";

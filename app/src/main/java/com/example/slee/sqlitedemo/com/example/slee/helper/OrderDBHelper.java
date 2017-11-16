@@ -19,12 +19,12 @@ public class OrderDBHelper extends SQLiteOpenHelper {
     private static Map<String,OrderDBHelper> helper_Map = new HashMap<>();
     private static OrderDBHelper helper;
 
-    public static OrderDBHelper getInstance(Context context,String TABLE_NAME,int DB_VERSION,String tableClause){
+    public static OrderDBHelper getInstance(Context context,String DB_NAME,String TABLE_NAME,int DB_VERSION,String tableClause){
         if(!helper_Map.containsKey(tableClause)){
             if (helper == null){
                 synchronized (OrderDBHelper.class){
                     if (helper == null){
-                        helper = new OrderDBHelper(context,TABLE_NAME,DB_VERSION,tableClause);
+                        helper = new OrderDBHelper(context,DB_NAME,TABLE_NAME,DB_VERSION,tableClause);
                     }
                 }
             }
@@ -34,8 +34,8 @@ public class OrderDBHelper extends SQLiteOpenHelper {
         return helper_Map.get(tableClause);
     }
 
-    private OrderDBHelper(Context context,String TABLE_NAME,int DB_VERSION,String tableClause) {
-        super(context, Contant.DB_NAME, null, DB_VERSION);
+    private OrderDBHelper(Context context,String DB_NAME,String TABLE_NAME,int DB_VERSION,String tableClause) {
+        super(context, DB_NAME, null, DB_VERSION);
         this.TABLE_NAME = TABLE_NAME;
         this.table_Clause = tableClause;
     }

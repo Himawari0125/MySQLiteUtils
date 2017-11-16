@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             dealwithError(e);
         }
         beans.add(bean);
-        DBManager.addData(MainActivity.this, Contant.STUDENT_TABLE_CLAUSE, beans,new DBManager.DataBaseWriteListener() {
+        DBManager.addData(MainActivity.this,Contant.DB_NAME_STUDENT,  Contant.STUDENT_TABLE_CLAUSE, beans,new DBManager.DataBaseWriteListener() {
             @Override
             public void writeComplited(boolean success) {
                 if(success) textview.setText("success");
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onQueryClick(View view){
         //new String[]{"id"},"name=\"Julian\""
-        List<Object> beans = DBManager.queryData(MainActivity.this, Contant.STUDENT_TABLE_CLAUSE, new String[]{},null,"com.example.slee.sqlitedemo.bean.StudentBean");
+        List<Object> beans = DBManager.queryData(MainActivity.this,Contant.DB_NAME_STUDENT,  Contant.STUDENT_TABLE_CLAUSE, new String[]{},null,"com.example.slee.sqlitedemo.bean.StudentBean");
         String s = "";
         for(int i = 0 ; i < beans.size(); i ++){
             s+=beans.get(i).toString()+"\n";
@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onDeleteClick(View view){
-        DBManager.deleteData(MainActivity.this, Contant.STUDENT_TABLE_CLAUSE, "id",new String[]{"1"});
+        DBManager.deleteData(MainActivity.this, Contant.DB_NAME_STUDENT, Contant.STUDENT_TABLE_CLAUSE, "id",new String[]{"1"});
     }
 
     /**
@@ -85,16 +85,9 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             dealwithError(e);
         }
-        bean.setName(name_edt.getText().toString());
-
-//        Map<String,Object> map = new HashMap<>();
-//        map.put("id",bean.getId());
-//        map.put("name",bean.getName());
-//        map.put("age",bean.getAge());
-
 
         try{
-            DBManager.insertData(this, Contant.STUDENT_TABLE_CLAUSE, "name",bean);
+            DBManager.insertData(this,Contant.DB_NAME_STUDENT, Contant.STUDENT_TABLE_CLAUSE, "name",bean);
         }catch (Exception exception){
             Log.e("Exception:",exception.getMessage());
             Toast.makeText(this,exception.getMessage(),Toast.LENGTH_SHORT).show();
@@ -104,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onUpdateClick(View view){
-        DBManager.updateDatas(this,Contant.STUDENT_TABLE_CLAUSE,"name",name_edt.getText().toString(),"id",new String[]{id_edt.getText().toString()});
+        DBManager.updateDatas(this,Contant.DB_NAME_STUDENT, Contant.STUDENT_TABLE_CLAUSE,"name",name_edt.getText().toString(),"id",new String[]{id_edt.getText().toString()});
 
     }
     private void init(){
